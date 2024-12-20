@@ -1,15 +1,15 @@
 const express = require("express");
-const axios = require("axios");
-const { getSpotifyAccessToken } = require("../utils/auth");
 const { Album } = require("../../database/dbConnection");
+const { getValidAccessToken } = require("../utils/auth");
+const axios = require("axios");
 
 const router = express.Router();
 
-router.get("/new-releases", async (req, res) => {
-  try {
-    const token = await getSpotifyAccessToken();
+router.get("/new-releases/:userId", async (req, res) => {
+  const { userId } = req.params;
 
-    // Fetch data from Spotify API
+  try {
+    const token = await getValidAccessToken(userId);
     const response = await axios.get(
       "https://api.spotify.com/v1/browse/new-releases",
       {
@@ -18,12 +18,8 @@ router.get("/new-releases", async (req, res) => {
     );
 
     const albums = response.data.albums.items;
-
-    // Loop through the albums and save each to the database
     for (const album of albums) {
-      const imageUrl = album.images[0]?.url || ""; // Fallback to empty string if no image
-
-      // Extract artist details
+      const imageUrl = album.images[0]?.url || "";
       const primaryArtist = album.artists[0];
 
       await Album.upsert({
@@ -42,8 +38,8 @@ router.get("/new-releases", async (req, res) => {
 
     res.json({ message: "New releases fetched and saved successfully!" });
   } catch (error) {
-    console.error("Error fetching new releases:", error);
-    res.status(500).json({ error: "Failed to fetch new releases" });
+    console.error("Error fetching new releases:", error.message);
+    res.status(500).json({ error: "Failed to fetch new releases." });
   }
 });
 

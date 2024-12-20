@@ -2,20 +2,32 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const routes = require("./routes");
+const session = require("express-session");
 
 console.log("SPOTIFY_CLIENT_ID:", process.env.SPOTIFY_CLIENT_ID);
 console.log("SPOTIFY_CLIENT_SECRET:", process.env.SPOTIFY_CLIENT_SECRET);
 
 const app = express();
 
-// Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL, // Frontend URL
+    credentials: true, // Allow credentials (cookies) to be sent with requests
+  })
+);
+
 app.use(express.json());
 
-// Spotify API Routes
-app.use("/api/spotify", routes);
+app.use(
+  session({
+    secret: "your-session-secret", // Replace with a more secure secret
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+app.use("/", routes);
 
-// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

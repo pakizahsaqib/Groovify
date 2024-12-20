@@ -4,7 +4,6 @@ const { getSpotifyAccessToken } = require("../utils/auth");
 
 const router = express.Router();
 
-// Fetch Albums of an Artist
 router.get("/artist/:id", async (req, res) => {
   try {
     const token = await getSpotifyAccessToken();
