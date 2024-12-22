@@ -36,7 +36,10 @@ router.get("/new-releases/:userId", async (req, res) => {
       });
     }
 
-    res.json({ message: "New releases fetched and saved successfully!" });
+    res.json({
+      message: "New releases fetched and saved successfully!",
+      albums,
+    });
   } catch (error) {
     console.error("Error fetching new releases:", error.message);
     res.status(500).json({ error: "Failed to fetch new releases." });

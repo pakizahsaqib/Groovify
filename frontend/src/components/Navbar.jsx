@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { assets } from "../assets/frontend-assets/assets";
 
-const Navbar = ({ setSearchResults }) => {
+const Navbar = ({ username, setSearchResults }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
 
@@ -17,10 +17,10 @@ const Navbar = ({ setSearchResults }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setSearchResults(response.data.artists?.items || []); // Set results in parent state
+      setSearchResults(response.data.artists?.items || []);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      setSearchResults([]); // Reset to empty array on error
+      setSearchResults([]);
     }
   };
 
@@ -54,7 +54,7 @@ const Navbar = ({ setSearchResults }) => {
             <input
               type="text"
               placeholder="What do you want to play?"
-              className="w-60 p-2 text-base text-white font-light bg-transparent"
+              className="w-60 p-2 text-base text-white font-light bg-transparent focus:outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -85,8 +85,8 @@ const Navbar = ({ setSearchResults }) => {
         </div>
         <img className="w-8 p-2 cursor-pointer" src={assets.bell_icon} />
         <div className="bg-neutral-800 p-2 rounded-full hover:scale-105 cursor-pointer">
-          <p className="bg-orange-500 text-sm text-black w-7 h-7 rounded-full flex items-center justify-center ">
-            P
+          <p className="bg-orange-500 text-md text-black w-7 h-7 rounded-full flex items-center justify-center ">
+            {username.charAt(0).toUpperCase() + username.slice(1, 1)}
           </p>
         </div>
       </div>

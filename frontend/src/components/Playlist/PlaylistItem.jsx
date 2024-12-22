@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import PlaylistDetailPage from "./PlaylistDetailPage";
-import { assets } from "../assets/frontend-assets/assets";
+import { assets } from "../../assets/frontend-assets/assets";
 import axios from "axios";
 import Cookies from "js-cookie";
+import PlaylistDetailPage from "./PlaylistDetailPage";
+import { useOutletContext } from "react-router-dom";
 
-const PlaylistItem = ({ selectedPlaylist }) => {
-  const token = Cookies.get("access_token"); // Use js-cookie to get token
+const PlaylistItem = () => {
+  const { selectedPlaylist } = useOutletContext();
+  console.log("Selected Playlist inside : ", selectedPlaylist);
+  const token = Cookies.get("access_token");
 
   //console.log("Access Token", accessToken);
   const [tracks, setTracks] = useState([]);
   const [formattedDuration, setFormattedDuration] = useState("");
-  let id = 1;
 
   useEffect(() => {
     const fetchTracks = async (playlistId) => {
@@ -24,6 +26,9 @@ const PlaylistItem = ({ selectedPlaylist }) => {
           }
         );
         setTracks(response.data.items);
+
+        console.log("Tracks: ", tracks);
+        console.log(tracks[0].track.uri);
 
         const totalDuration = response.data.items.reduce(
           (acc, track) => acc + track.track.duration_ms,
@@ -53,7 +58,7 @@ const PlaylistItem = ({ selectedPlaylist }) => {
       <div className="p-10 overflow-auto text-white rounded-md">
         {selectedPlaylist && (
           <div>
-            <div className="mt-10 flex gap-8 flex-col md:flex-row md:items-center">
+            <div className="flex gap-8 flex-col md:flex-row md:items-center">
               <img
                 className="w-48 rounded"
                 src={selectedPlaylist.images[0]?.url}
@@ -103,7 +108,8 @@ const PlaylistItem = ({ selectedPlaylist }) => {
                   artists={track.track.artists
                     .map((artist) => artist.name)
                     .join(", ")}
-                  id={id++}
+                  id={index + 1}
+                  uri={track.track.uri}
                 />
               ))}
             </div>

@@ -173,8 +173,17 @@ router.get("/callback", async (req, res) => {
         Authorization: `Bearer ${access_token}`,
       },
     });
+    console.log("RESPONSE BACKEND", response.data);
 
     const userId = userResponse.data.id;
+    const userName = userResponse.data.display_name;
+    console.log("Backend : ID", userId);
+    console.log("Backend : Name", userName);
+
+    // Debug the lengths and data
+    console.log("Access Token Length:", access_token.length);
+    console.log("Refresh Token Length:", refresh_token.length);
+    console.log("User ID:", userId);
     req.session.userId = userId;
 
     const existingToken = await Token.findOne({ where: { userId: userId } });
@@ -184,10 +193,10 @@ router.get("/callback", async (req, res) => {
       existingToken.refreshToken = refresh_token;
       await existingToken.save();
       res.cookie("access_token", access_token, {});
-      return res.redirect(FRONTEND_URL);
-
-      // Setting the cookie (res.cookie(...)) before the redirect (res.redirect(...)). The redirect is the final step in the response cycle.
-      // Once you call res.redirect(), the response is sent to the client, so make sure that no other response is sent afterward.
+      // Return user data to frontend
+      return res.redirect(
+        `${FRONTEND_URL}/main?userId=${userId}&username=${userName}`
+      );
     } else {
       await Token.create({
         userId: userId,
@@ -196,15 +205,11 @@ router.get("/callback", async (req, res) => {
       });
 
       res.cookie("access_token", access_token, {
-        //  secure:true
+        // secure:true
       });
 
-      res.redirect(FRONTEND_URL);
-
-      // •	Ensure you only call one response method (res.json, res.redirect, or res.send) per request.
-      // •	If you're sending a redirect, set any cookies before calling res.redirect.
-      // •	If you're sending a JSON response, avoid calling a redirect afterward.
-      // This should resolve the Cannot set headers after they are sent to the client error. Let me know if you need further clarification!
+      // Return user data to frontend
+      res.redirect(`${FRONTEND_URL}?userId=${userId}&username=${userName}`);
     }
   } catch (error) {
     console.error("Error fetching access token:", error.message);

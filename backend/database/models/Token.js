@@ -6,16 +6,16 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
     accessToken: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(512),
       allowNull: false,
     },
     refreshToken: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(512),
       allowNull: false,
     },
     expiresAt: {
-      type: DataTypes.DATE, // Storing expiration time as a datetime
-      allowNull: true, // Optional, can be set later
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   });
 
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     Token.belongsTo(models.User, {
       foreignKey: "userId",
       targetKey: "id",
-      onDelete: "CASCADE", // Delete token if the user is deleted
+      onDelete: "CASCADE",
     });
   };
 

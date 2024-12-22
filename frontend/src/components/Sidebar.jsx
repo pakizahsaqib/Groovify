@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { assets } from "../assets/frontend-assets/assets";
 const Sidebar = ({ playlists, onPlaylistClick }) => {
   console.log("Sidebar received playlists:", playlists);
@@ -17,30 +18,37 @@ const Sidebar = ({ playlists, onPlaylistClick }) => {
 
         <div className="mt-6 px-4">
           <h2 className="text-lg font-semibold mb-4">Your Playlists</h2>
+
           <ul className="space-y-2">
             {playlists.length > 0 ? (
               playlists.map((playlist) => (
-                <li
+                <Link
                   key={playlist.id}
-                  className="text-sm font-medium cursor-pointer hover:text-gray-400 flex items-center "
-                  onClick={() => onPlaylistClick(playlist)}
+                  to={`/main/playlist`}
+                  className="hover:text-green-600"
                 >
-                  <img
-                    className="inline w-10 mr-5"
-                    src={playlist.images[0]?.url}
-                  />
-                  <div>
-                    <p className="text-base font-light hover:text-green-500">
-                      {" "}
-                      {playlist.name}
-                    </p>
+                  <li
+                    key={playlist.id}
+                    className="text-sm my-2 font-medium cursor-pointer hover:text-gray-400 flex items-center "
+                    onClick={() => onPlaylistClick(playlist)}
+                  >
+                    <img
+                      className="inline w-10 mr-5"
+                      src={playlist.images[0]?.url}
+                    />
+                    <div>
+                      <p className="text-base font-light hover:text-green-500">
+                        {" "}
+                        {playlist.name}
+                      </p>
 
-                    <p className="font-light text-neutral-400">
-                      Playlist <b className="text-md">•</b>{" "}
-                      {playlist.owner.display_name}
-                    </p>
-                  </div>
-                </li>
+                      <p className="font-light text-neutral-400">
+                        Playlist <b className="text-md">•</b>{" "}
+                        {playlist.owner.display_name}
+                      </p>
+                    </div>
+                  </li>
+                </Link>
               ))
             ) : (
               <>

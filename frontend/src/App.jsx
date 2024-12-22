@@ -3,51 +3,93 @@ import { Route, Navigate, Routes } from "react-router-dom";
 import axios from "axios";
 import MainLayout from "./components/MainLayout";
 import Login from "./components/Login";
+import ArtistDetailPage from "./components/Artist/ArtistDetailPage";
+import ArtistAlbums from "./components/Artist/ArtistAlbums";
+import ArtistTracks from "./components/Artist/ArtistTracks";
 import Cookies from "js-cookie";
+import AlbumDetailPage from "./components/Album/AlbumDetailPage";
+import AlbumTracks from "./components/Album/AlbumTracks";
+import Home from "./components/Home";
+import PlaylistItem from "./components/Playlist/PlaylistItem";
+import SearchResults from "./components/SearchResult";
 
 function App() {
-  const [userData, setUserData] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("userData")) || null
+  );
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true" || false
+  );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const accessToken = Cookies.get("access_token"); // Use js-cookie to get token
+    const accessToken = Cookies.get("access_token");
 
-    // const accessToken = document.cookie
-    //   .split("; ")
-    //   .find((row) => row.startsWith("access_token="));
-    console.log("Access Token", accessToken);
-    if (accessToken) {
-      setIsAuthenticated(true);
+    if (accessToken && !userData) {
       axios
         .get("/auth/callback", {
-          headers: { Authorization: `Bearer ${accessToken.split("=")[1]}` },
+          headers: { Authorization: `Bearer ${accessToken}` },
         })
         .then((response) => {
-          setUserData(response.data.userData); // Set user data to state
+          const fetchedUserData = response.data.userData;
+          setUserData(fetchedUserData);
+          setIsAuthenticated(true);
+          localStorage.setItem("userData", JSON.stringify(fetchedUserData));
+          localStorage.setItem("isAuthenticated", "true");
         })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
+        .catch(() => {
           setIsAuthenticated(false);
-        });
+          localStorage.removeItem("userData");
+          localStorage.removeItem("isAuthenticated");
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-  }, []);
+  }, [userData]);
+
+  const handleLogout = () => {
+    setUserData(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem("userData");
+    localStorage.removeItem("isAuthenticated");
+    Cookies.remove("access_token");
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
 
-      <Route
-        path="/main"
-        element={
-          isAuthenticated ? (
-            <MainLayout userData={userData} />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
+      {isAuthenticated ? (
+        <>
+          <Route
+            path="/main"
+            element={<MainLayout userData={userData} onLogout={handleLogout} />}
+          >
+            <Route index element={<Home userId={userData.userId} />} />
+            <Route path="playlist" element={<PlaylistItem />} />
+            <Route path="search" element={<SearchResults />} />
+            <Route
+              path="artists/:id"
+              element={<ArtistDetailPage userId={userData.userId} />}
+            />
+            <Route path="artists/:id/albums" element={<ArtistAlbums />} />
+            <Route path="artists/:id/top-tracks" element={<ArtistTracks />} />
+            <Route
+              path="album/:id"
+              element={<AlbumDetailPage userId={userData.userId} />}
+            />
+            <Route path="album/:id/tracks" element={<AlbumTracks />} />
+          </Route>
+        </>
+      ) : (
+        <Route path="*" element={<Navigate to="/login" />} />
+      )}
 
-      {/* Redirect the root path to either /main or /login based on authentication */}
       <Route
         path="/"
         element={<Navigate to={isAuthenticated ? "/main" : "/login"} />}

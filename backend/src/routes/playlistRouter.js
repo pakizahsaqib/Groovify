@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { makeSpotifyRequest, getUserIdFromToken } = require("../utils/auth");
-const { Token } = require("../../database/dbConnection"); // Assuming User is where user data is stored
 
 router.get("/", async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1]; // Extract token from 'Authorization' header
