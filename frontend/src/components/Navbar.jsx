@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { assets } from "../assets/frontend-assets/assets";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ username, setSearchResults }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,7 +47,9 @@ const Navbar = ({ username, setSearchResults }) => {
       <img className="w-8" src={assets.spotify_w} />
       <div className="flex items-center gap-2 absolute left-1/2  transform -translate-x-1/2">
         <div className="bg-neutral-800 p-3 rounded-full hover:scale-105 cursor-pointer">
-          <img className="w-6" src={assets.home_icon} />
+          <Link to="/main" onClick={() => searchQuery("")}>
+            <img className="w-6" src={assets.home_icon} />
+          </Link>
         </div>
         <div className="w-[100%] flex items-center justify-between bg-neutral-800 px-6 py-0.5 rounded-full gap-24">
           <div className="flex items-center gap-2">
@@ -76,12 +79,16 @@ const Navbar = ({ username, setSearchResults }) => {
         />
       </div> */}
       <div className="flex items-center gap-4">
-        <button className="rounded-full bg-white text-black text-sm cursor-pointer px-4 py-1.5 hidden md:block">
-          Explore Premium
-        </button>
+        <Link to="/main/premium">
+          <button className="rounded-full bg-white text-black text-sm cursor-pointer px-4 py-1.5 hidden md:block">
+            Explore Premium
+          </button>
+        </Link>
         <div className="flex items-center gap-1 text-white text-sm cursor-pointer px-4 py-1">
           <img className="w-4" src={assets.download} />
-          <p>Install App</p>
+          <Link to="/main/installApp">
+            <p>Install App</p>
+          </Link>
         </div>
         <img className="w-8 p-2 cursor-pointer" src={assets.bell_icon} />
         <div className="bg-neutral-800 p-2 rounded-full hover:scale-105 cursor-pointer">

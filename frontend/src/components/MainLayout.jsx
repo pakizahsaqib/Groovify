@@ -65,20 +65,21 @@ function MainLayout({ userData }) {
       <Navbar username={userData?.username} setSearchResults={handleSearch} />
       <div className="h-[80%] m-0 flex">
         <Sidebar playlists={playlists} onPlaylistClick={handlePlaylistClick} />
-        <div className="w-[100%] px-6 pt-4 rounded-lg bg-[#121212] text-white overflow-auto lg:w-[75%] lg:ml-0">
+        <div className="w-[100%] px-6 pt-4 flex-1 rounded-lg bg-[#121212] text-white overflow-auto lg:w-[75%] lg:ml-0">
           <Outlet
             context={{
               selectedPlaylist,
               userData,
               searchResults,
               handleTrackSelect,
+              playlists,
             }}
           />
           <Footer />
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0">
+      <div className="h-[10%] absolute bottom-0 left-0 right-0">
         {<AudioPlayer trackUri={trackUri} />}
       </div>
     </div>

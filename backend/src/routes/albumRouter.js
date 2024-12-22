@@ -69,7 +69,6 @@ router.get("/:id/tracks", async (req, res) => {
   }
 });
 
-// Get the current user's saved albums
 router.get("/me/albums", async (req, res) => {
   const { userId } = req.query;
 

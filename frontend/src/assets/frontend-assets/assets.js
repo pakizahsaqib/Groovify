@@ -16,6 +16,7 @@ import stack_icon from "./stack.png";
 import zoom_icon from "./zoom.png";
 import plus_icon from "./plus.png";
 import arrow_icon from "./arrow.png";
+import arrow_icon_r from "./arrow_icon_r.png";
 import mini_player_icon from "./mini-player.png";
 import queue_icon from "./queue.png";
 import volume_icon from "./volume.png";
@@ -30,6 +31,7 @@ import pw_hide from "./pw-hide.png";
 import google from "./google.png";
 import facebook from "./facebook.png";
 import apple from "./apple.png";
+import mock_img from "./mock_img.png";
 
 import img1 from "./img1.jpg";
 import img2 from "./img2.jpg";
@@ -84,6 +86,8 @@ export const assets = {
   facebook,
   google,
   apple,
+  arrow_icon_r,
+  mock_img,
 };
 
 export const albumsData = [

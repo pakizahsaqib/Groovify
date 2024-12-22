@@ -9,7 +9,7 @@ const Footer = () => {
             <h3 className="font-semibold text-base mb-2 text-white  ">
               Company
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 cursor-pointer">
               <li>About</li>
               <li>Jobs</li>
               <li>For the Record</li>
@@ -20,7 +20,7 @@ const Footer = () => {
             <h3 className="font-semibold text-base mb-2 text-white ">
               Communities
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 cursor-pointer">
               <li>For Artists</li>
               <li>Developers</li>
               <li>Advertising</li>
@@ -30,20 +30,20 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-semibold text-base mb-2 text-white ">
+            <h3 className="font-semibold text-base mb-2 text-white  ">
               Useful links
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 cursor-pointer">
               <li>Support</li>
               <li>Free Mobile App</li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold text-base mb-2 text-white ">
+            <h3 className="font-semibold text-base mb-2 text-white  ">
               Groovify Plans
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2 cursor-pointer">
               <li>Premium Individual</li>
               <li>Premium Duo</li>
               <li>Premium Family</li>
@@ -53,7 +53,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex space-x-6 text-md text-white">
+        <div className="flex flex-col md:flex-row md:items-start items-center gap-2 text-md text-white">
           <a
             href="#"
             className="rounded-full w-9 h-9 p-2  text-center bg-neutral-800"
@@ -78,7 +78,7 @@ const Footer = () => {
       <hr className="my-6 bg-neutral-700 border-0 h-px" />
 
       <div className="flex justify-between items-center">
-        <div className="flex flex-col md:flex-row justify-center space-y-2 md:space-y-0 md:space-x-6 text-neutral-400 text-xs mt-4">
+        <div className="flex flex-col md:flex-row justify-center space-y-2 md:space-y-0 md:space-x-6 text-neutral-400 text-xs mt-4 cursor-pointer">
           <a href="#">Legal</a>
           <a href="#">Safety & Privacy Center</a>
           <a href="#">Privacy Policy</a>

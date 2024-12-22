@@ -27,9 +27,6 @@ const PlaylistItem = () => {
         );
         setTracks(response.data.items);
 
-        console.log("Tracks: ", tracks);
-        console.log(tracks[0].track.uri);
-
         const totalDuration = response.data.items.reduce(
           (acc, track) => acc + track.track.duration_ms,
           0
@@ -55,12 +52,12 @@ const PlaylistItem = () => {
   console.log("selectedPlaylist", selectedPlaylist);
   return (
     <>
-      <div className="p-10 overflow-auto text-white rounded-md">
+      <div className="p-10 overflow-auto text-white rounded-md text-center sm:text-left">
         {selectedPlaylist && (
           <div>
             <div className="flex gap-8 flex-col md:flex-row md:items-center">
               <img
-                className="w-48 rounded"
+                className="w-48 rounded self-center sm:self-start"
                 src={selectedPlaylist.images[0]?.url}
                 alt={selectedPlaylist.name}
               />
@@ -81,7 +78,7 @@ const PlaylistItem = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 sm:grid-cols-4 mt-10 mb-4 pl-2 text-[#a7a7a7]">
+            <div className="grid grid-cols-3 sm:grid-cols-4 mt-10 mb-4 pl-2 text-[#a7a7a7] text-left">
               <p>
                 <b className="mr-4">#</b>Title
               </p>
@@ -89,7 +86,7 @@ const PlaylistItem = () => {
               <p className="hidden sm:block">Album</p>
               <p className="hidden sm:block">Date Added</p>
               <img
-                className="m-auto w-4"
+                className="m-auto w-4 hidden sm:block"
                 src={assets.clock_icon}
                 alt="Clock icon"
               />

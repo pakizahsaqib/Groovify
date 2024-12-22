@@ -12,6 +12,8 @@ import AlbumTracks from "./components/Album/AlbumTracks";
 import Home from "./components/Home";
 import PlaylistItem from "./components/Playlist/PlaylistItem";
 import SearchResults from "./components/SearchResult";
+import ExplorePremium from "./components/ExplorePremium";
+import InstallApp from "./components/InstallApp";
 
 function App() {
   const [userData, setUserData] = useState(
@@ -73,6 +75,8 @@ function App() {
             <Route index element={<Home userId={userData.userId} />} />
             <Route path="playlist" element={<PlaylistItem />} />
             <Route path="search" element={<SearchResults />} />
+            <Route path="premium" element={<ExplorePremium />} />
+            <Route path="installApp" element={<InstallApp />} />
             <Route
               path="artists/:id"
               element={<ArtistDetailPage userId={userData.userId} />}

@@ -1,39 +1,45 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import TrackCard from "../Track/TrackCard";
+import Cookies from "js-cookie";
 
 const ArtistTracks = ({ userId }) => {
-  console.log("User:", userId);
+  const token = Cookies.get("access_token");
   const { id } = useParams();
-  console.log("Artist:", id);
   const [tracks, setTracks] = useState([]);
+  const { playlists } = useOutletContext();
 
   useEffect(() => {
+    if (!token) {
+      console.error("Access token is missing");
+      return;
+    }
+
     const fetchArtistData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/artists/${id}/top-tracks?userId=${userId}`
+          `http://localhost:3000/artists/${id}/top-tracks?userId=${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        console.log("Artist Tracks Data: ", response);
-
         setTracks(response.data.tracks);
       } catch (error) {
-        console.error("Error fetching artist data");
+        console.error("Error fetching artist data", error);
       }
     };
-    fetchArtistData();
-  }, [id, userId]);
 
-  if (!tracks) return <div>Loading...</div>;
+    fetchArtistData();
+  }, [id, userId, token]);
+
+  if (!tracks.length) return <div>Loading...</div>;
 
   return (
-    // <div className="bg-black text-white">
-    //   <div className="p-6">
-    //     <h2 className="text-2xl font-semibold mb-4">Tracks</h2>
-    //     <div className="text-white space-y-4">
     <>
-      {tracks.map((track, index) => (
+      {tracks.map((track) => (
         <TrackCard
           key={track.id}
           id={track.id}
@@ -41,41 +47,12 @@ const ArtistTracks = ({ userId }) => {
           image={track.album.images[1]?.url}
           desc={track.album.release_date}
           uri={track.uri}
+          playlists={playlists}
+          token={token}
+          userId={userId}
         />
-        // <div
-        //   key={track.id}
-        //   className="flex justify-between items-center p-4 bg-gray-800 rounded-lg"
-        // >
-        //   <div className="flex items-center space-x-4">
-        //     <div className="text-white text-lg font-semibold">
-        //       {track.name}
-        //     </div>
-        //     <div className="text-gray-400 text-sm">
-        //       {track.artists.map((artist) => artist.name).join(", ")}
-        //     </div>
-        //   </div>
-        //   <div className="flex items-center space-x-4">
-        //     <a
-        //       href={track.external_urls.spotify}
-        //       target="_blank"
-        //       rel="noopener noreferrer"
-        //       className="text-green-500 hover:text-green-400"
-        //     >
-        //       Play
-        //     </a>
-        //     <span className="text-gray-400">
-        //       {Math.floor(track.duration_ms / 60000)}:
-        //       {Math.floor((track.duration_ms % 60000) / 1000)
-        //         .toString()
-        //         .padStart(2, "0")}
-        //     </span>
-        //   </div>
-        // </div>
       ))}
     </>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 
