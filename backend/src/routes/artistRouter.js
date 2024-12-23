@@ -5,7 +5,7 @@ const { Artist } = require("../../database/dbConnection");
 
 const router = express.Router();
 
-// Fetch multiple artists and save them in the database
+//Fetch Through DB
 router.get("/", async (req, res) => {
   try {
     const allArtists = await Artist.findAll();
@@ -100,6 +100,8 @@ router.get("/:id/top-tracks", async (req, res) => {
 });
 
 module.exports = router;
+
+//LOGIC TO STORE Artist Data IN DB
 
 // const express = require("express");
 // const axios = require("axios");

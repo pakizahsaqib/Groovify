@@ -66,7 +66,6 @@ router.post("/add-track", async (req, res) => {
   }
 
   try {
-    // Fetch the current tracks in the playlist
     const currentTracksResponse = await axios.get(
       `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
@@ -80,12 +79,10 @@ router.post("/add-track", async (req, res) => {
       (item) => item.track.uri
     );
 
-    // Check if the track is already in the playlist
     if (currentTrackUris.includes(trackUri)) {
       return res.status(400).json({ error: "Track already in playlist" });
     }
 
-    // If track is not in the playlist, proceed to add it
     await axios.post(
       `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       { uris: [trackUri] },
@@ -107,150 +104,68 @@ router.post("/add-track", async (req, res) => {
   }
 });
 
+router.delete("/remove-track", async (req, res) => {
+  const { playlistId, trackUri, accessToken } = req.body;
+  if (!playlistId || !trackUri || !accessToken) {
+    return res.status(400).json({
+      error: "Missing required fields: playlistId, trackUri, or accessToken",
+    });
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tracks: [{ uri: trackUri }],
+        }),
+      }
+    );
+
+    if (response.ok) {
+      return res
+        .status(200)
+        .json({ message: "Track removed from playlist successfully" });
+    } else {
+      const errorData = await response.json();
+      return res
+        .status(response.status)
+        .json({ error: errorData.error.message });
+    }
+  } catch (error) {
+    console.error("Error removing track:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while removing the track" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const playlist = await Playlist.findByIdAndDelete(id);
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    res.status(200).json({ message: "Playlist deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting playlist:", error);
+    res.status(500).json({ message: "Error deleting playlist" });
+  }
+});
+//...No used
 // Change Playlist Details
 router.put("/playlists/:id", async (req, res) => {
   try {
     const response = await spotifyApi.put(
       `/playlists/${req.params.id}`,
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get Playlist Items
-router.get("/playlists/:id/tracks", async (req, res) => {
-  try {
-    const response = await spotifyApi.get(`/playlists/${req.params.id}/tracks`);
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Update Playlist Items
-router.put("/playlists/:id/tracks", async (req, res) => {
-  try {
-    const response = await spotifyApi.put(
-      `/playlists/${req.params.id}/tracks`,
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Add Items to Playlist
-router.post("/playlists/:id/tracks", async (req, res) => {
-  try {
-    const response = await spotifyApi.post(
-      `/playlists/${req.params.id}/tracks`,
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Remove Playlist Items
-router.delete("/playlists/:id/tracks", async (req, res) => {
-  try {
-    const response = await spotifyApi.delete(
-      `/playlists/${req.params.id}/tracks`,
-      { data: req.body }
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get Current User's Playlists
-router.get("/me/playlists", async (req, res) => {
-  try {
-    const response = await spotifyApi.get("/me/playlists");
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get User's Playlists
-router.get("/users/:user_id/playlists", async (req, res) => {
-  try {
-    const response = await spotifyApi.get(
-      `/users/${req.params.user_id}/playlists`
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Create Playlist
-router.post("/users/:user_id/playlists", async (req, res) => {
-  try {
-    const response = await spotifyApi.post(
-      `/users/${req.params.user_id}/playlists`,
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Delete Playlist
-router.delete("/playlists/:id", async (req, res) => {
-  try {
-    const response = await spotifyApi.delete(`/playlists/${req.params.id}`);
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get Featured Playlists
-router.get("/browse/featured-playlists", async (req, res) => {
-  try {
-    const response = await spotifyApi.get("/browse/featured-playlists");
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get Category's Playlists
-router.get("/browse/categories/:category_id/playlists", async (req, res) => {
-  try {
-    const response = await spotifyApi.get(
-      `/browse/categories/${req.params.category_id}/playlists`
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get Playlist Cover Image
-router.get("/playlists/:id/images", async (req, res) => {
-  try {
-    const response = await spotifyApi.get(`/playlists/${req.params.id}/images`);
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Add Custom Playlist Cover Image
-router.put("/playlists/:id/images", async (req, res) => {
-  try {
-    const response = await spotifyApi.put(
-      `/playlists/${req.params.id}/images`,
       req.body
     );
     res.json(response.data);

@@ -2,7 +2,6 @@
 
 const { Token } = require("../../database/dbConnection");
 
-// Get access token from the database for a given user
 const getAccessToken = async (userId) => {
   const tokenRecord = await Token.findOne({ where: { userId } });
   return tokenRecord ? tokenRecord.accessToken : null;

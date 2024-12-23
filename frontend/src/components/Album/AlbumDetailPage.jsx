@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { assets, songsData } from "../../assets/frontend-assets/assets";
+import { assets } from "../../assets/frontend-assets/assets";
 import axios from "axios";
 import AlbumTracks from "./AlbumTracks";
 
@@ -55,11 +55,12 @@ const AlbumDetailPage = ({ userId }) => {
         </div>
       </div>
 
-      <div className="grid grid-col-4 sm:grid-cols-4 mt-10 mb-4 pl-2 text-[#a7a7a7]">
+      <div className="grid grid-col-4 sm:grid-cols-5 mt-10 mb-4 pl-2 text-[#a7a7a7]">
         <p>
           <b className="mr-4">#</b>Title
         </p>
         <p className="hidden sm:block">Artist</p>
+        <div></div>
         <img
           className="m-auto w-4 hidden sm:block"
           src={assets.clock_icon}
@@ -76,24 +77,10 @@ const AlbumDetailPage = ({ userId }) => {
             name={track.name}
             artist={track.artists[0].name}
             duration={track.duration_ms}
-            url={track.external_urls.spotify}
             uri={track.uri}
           />
         ))}
       </div>
-      {/* // <div
-        //   key={track.id}
-        //   className="grid grid-cols-3 sm:grid-cols-4 gap-4 p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff26]"
-        // >
-        //   <p className="text-white">
-        //     <b className="mr-4 text-[#a7a7a7]">{index + 1}</b>
-        //     {track.name}
-        //   </p>
-
-        //   <p className="text-sm hidden sm:block">
-        //     {formatDuration(track.duration_ms)}
-        //   </p>
-        // </div> */}
     </div>
   );
 };

@@ -32,6 +32,10 @@ import google from "./google.png";
 import facebook from "./facebook.png";
 import apple from "./apple.png";
 import mock_img from "./mock_img.png";
+import visa from "./visa.png";
+import union_pay from "./union-pay.png";
+import master from "./master.png";
+import jcb from "./jcb.png";
 
 import img1 from "./img1.jpg";
 import img2 from "./img2.jpg";
@@ -88,6 +92,10 @@ export const assets = {
   apple,
   arrow_icon_r,
   mock_img,
+  jcb,
+  union_pay,
+  visa,
+  master,
 };
 
 export const albumsData = [

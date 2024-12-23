@@ -49,7 +49,6 @@ const ArtistTracks = ({ userId }) => {
           uri={track.uri}
           playlists={playlists}
           token={token}
-          userId={userId}
         />
       ))}
     </>

@@ -7,8 +7,6 @@ import { Link } from "react-router-dom";
 const Navbar = ({ username, setSearchResults }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
-
-  // Function to handle the API call
   const handleSearch = async (query) => {
     try {
       const token = Cookies.get("access_token");
@@ -44,20 +42,26 @@ const Navbar = ({ username, setSearchResults }) => {
 
   return (
     <div className="w-full flex justify-between items-center font-semibold bg-black px-6 py-3">
-      <img className="w-8" src={assets.spotify_w} />
+      <Link to="/main">
+        <img className="w-8" src={assets.spotify_w} />
+      </Link>
       <div className="flex items-center gap-2 absolute left-1/2  transform -translate-x-1/2">
-        <div className="bg-neutral-800 p-3 rounded-full hover:scale-105 cursor-pointer">
-          <Link to="/main" onClick={() => searchQuery("")}>
+        <Link
+          className="hidden lg:block"
+          to="/main"
+          onClick={() => searchQuery("")}
+        >
+          <div className="bg-neutral-800 p-3 rounded-full hover:scale-105 cursor-pointer">
             <img className="w-6" src={assets.home_icon} />
-          </Link>
-        </div>
+          </div>
+        </Link>
         <div className="w-[100%] flex items-center justify-between bg-neutral-800 px-6 py-0.5 rounded-full gap-24">
           <div className="flex items-center gap-2">
             <img className="w-5" src={assets.search_icon} />
             <input
               type="text"
-              placeholder="What do you want to play?"
-              className="w-60 p-2 text-base text-white font-light bg-transparent focus:outline-none"
+              placeholder="Search Artist ..."
+              className="w-full p-2 text-base text-white font-light bg-transparent focus:outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -80,17 +84,20 @@ const Navbar = ({ username, setSearchResults }) => {
       </div> */}
       <div className="flex items-center gap-4">
         <Link to="/main/premium">
-          <button className="rounded-full bg-white text-black text-sm cursor-pointer px-4 py-1.5 hidden md:block">
+          <button className="rounded-full bg-white text-black text-sm cursor-pointer px-4 py-1.5 hidden lg:block">
             Explore Premium
           </button>
         </Link>
-        <div className="flex items-center gap-1 text-white text-sm cursor-pointer px-4 py-1">
+        <div className="lg:flex items-center gap-1 text-white text-sm cursor-pointer px-4 py-1 hidden">
           <img className="w-4" src={assets.download} />
           <Link to="/main/installApp">
             <p>Install App</p>
           </Link>
         </div>
-        <img className="w-8 p-2 cursor-pointer" src={assets.bell_icon} />
+        <img
+          className="w-8 p-2 cursor-pointer hidden lg:block"
+          src={assets.bell_icon}
+        />
         <div className="bg-neutral-800 p-2 rounded-full hover:scale-105 cursor-pointer">
           <p className="bg-orange-500 text-md text-black w-7 h-7 rounded-full flex items-center justify-center ">
             {username.charAt(0).toUpperCase() + username.slice(1, 1)}

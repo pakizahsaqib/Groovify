@@ -11,8 +11,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // Frontend URL
-    credentials: true, // Allow credentials (cookies) to be sent with requests
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
   })
 );
 

@@ -56,7 +56,7 @@ const Login = () => {
           >
             <img
               className="w-6 absolute left-8"
-              src={assets.spotify_logo} // Spotify logo
+              src={assets.spotify_logo}
               alt="Spotify"
             />
             <span className="mx-auto font-semibold">Login with Spotify</span>

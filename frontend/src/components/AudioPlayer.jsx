@@ -23,10 +23,11 @@
 //....................................................................
 
 //PLAYBACK Logic - Remote Control
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { assets, songsData } from "../assets/frontend-assets/assets";
 import Cookies from "js-cookie";
 import spotifyServices from "../services/spotifyServices";
+import "../App.css";
 
 const AudioPlayer = ({ trackUri }) => {
   const accessToken = Cookies.get("access_token");
@@ -47,7 +48,7 @@ const AudioPlayer = ({ trackUri }) => {
     document.body.appendChild(script);
 
     window.onSpotifyWebPlaybackSDKReady = () => {
-      const player = new Spotify.Player({
+      const newPlayer = new Spotify.Player({
         name: "Web Playback SDK",
         getOAuthToken: (cb) => {
           cb(accessToken);
@@ -55,16 +56,16 @@ const AudioPlayer = ({ trackUri }) => {
         volume: 0.5,
       });
 
-      player.addListener("ready", ({ device_id }) => {
+      newPlayer.addListener("ready", ({ device_id }) => {
         console.log("Ready with Device ID", device_id);
         setDeviceId(device_id);
       });
 
-      player.addListener("not_ready", ({ device_id }) => {
+      newPlayer.addListener("not_ready", ({ device_id }) => {
         console.log("Device ID has gone offline", device_id);
       });
 
-      player.addListener("player_state_changed", (state) => {
+      newPlayer.addListener("player_state_changed", (state) => {
         if (state) {
           setCurrentTime(state.position);
           setDuration(state.duration);
@@ -80,8 +81,14 @@ const AudioPlayer = ({ trackUri }) => {
         }
       });
 
-      player.connect();
-      setPlayer(player);
+      newPlayer.connect().then((success) => {
+        if (success) {
+          console.log("Player connected successfully");
+          setPlayer(newPlayer);
+        } else {
+          console.error("Failed to connect player");
+        }
+      });
     };
 
     return () => {
@@ -111,14 +118,13 @@ const AudioPlayer = ({ trackUri }) => {
     }
   };
 
-  // Fetch and update track details whenever trackUri changes
   useEffect(() => {
-    if (trackUri) {
+    if (trackUri && deviceId) {
       spotifyServices
         .startResumePlayback(accessToken, deviceId, [trackUri])
         .then(() => {
           setIsPlaying(true);
-          fetchCurrentTrack();
+          fetchCurrentTrack(); // Fetch the current track details when playback starts
         });
     }
   }, [trackUri, accessToken, deviceId]);
@@ -133,7 +139,7 @@ const AudioPlayer = ({ trackUri }) => {
         .startResumePlayback(accessToken, deviceId, [trackUri])
         .then(() => {
           setIsPlaying(true);
-          fetchCurrentTrack();
+          fetchCurrentTrack(); // Fetch the current track details when playback starts
         });
     }
   };
@@ -141,7 +147,7 @@ const AudioPlayer = ({ trackUri }) => {
   const playNextSong = async () => {
     try {
       await spotifyServices.skipToNextTrack(accessToken);
-      fetchCurrentTrack();
+      fetchCurrentTrack(); // Fetch the next song details
     } catch (error) {
       console.error("Error skipping to next track:", error);
     }
@@ -150,7 +156,7 @@ const AudioPlayer = ({ trackUri }) => {
   const playPreviousSong = async () => {
     try {
       await spotifyServices.skipToPreviousTrack(accessToken);
-      fetchCurrentTrack();
+      fetchCurrentTrack(); // Fetch the previous song details
     } catch (error) {
       console.error("Error skipping to previous track:", error);
     }
@@ -196,26 +202,32 @@ const AudioPlayer = ({ trackUri }) => {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (player) {
-        player.getCurrentState().then((state) => {
-          if (!state) {
-            return;
-          }
-          setCurrentTime(state.position);
-          setDuration(state.duration);
-          setIsPlaying(!state.paused);
-        });
-      }
-    }, 1000);
+    if (player) {
+      const interval = setInterval(() => {
+        player
+          .getCurrentState()
+          .then((state) => {
+            if (!state) {
+              console.warn("No state available from player");
+              return;
+            }
+            setCurrentTime(state.position);
+            setDuration(state.duration);
+            setIsPlaying(!state.paused);
+          })
+          .catch((error) => {
+            console.error("Error fetching player state:", error);
+          });
+      }, 1000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }, [player]);
 
   return (
     <div className=" bg-black flex justify-between items-center text-white p-4">
       {/* Section 1 : Name, Artist */}
-      <div className=" hidden lg:flex items-center gap-4  ">
+      <div className=" hidden lg:flex items-center gap-4 w-[25%] ">
         <img
           className="w-12"
           src={trackDetails ? trackDetails.image : songsData[0].image}
@@ -223,7 +235,7 @@ const AudioPlayer = ({ trackUri }) => {
         />
         <div className="hidden lg:block">
           <p className="text-sm font-semibold">
-            {trackDetails?.name || "No track playing"}
+            {trackDetails?.name.slice(0, 20) || "No track playing"}
           </p>
           <p className="text-xs text-gray-400">
             {trackDetails?.artist || "Unknown Artist"}
@@ -281,12 +293,12 @@ const AudioPlayer = ({ trackUri }) => {
               .padStart(2, "0")}`}
           </p>
 
-          <div className="w-[60vw] max-w-[500px] bg-neutral-600 rounded-full cursor-pointer">
+          <div className="w-[60vw] max-w-[500px] bg-neutral-600 rounded-full cursor-pointer relative">
             <input
               type="range"
               value={currentTime}
               max={duration}
-              className="absolute top-0 left-0 w-full opacity-0 cursor-pointer"
+              className="absolute top-0 left-0 w-full  opacity-0 cursor-pointer"
               onChange={handleProgressChange}
             />
             <div
@@ -302,7 +314,7 @@ const AudioPlayer = ({ trackUri }) => {
         </div>
       </div>
       {/* Section 3 : Volume and Other Control */}
-      <div className="hidden lg:flex items-center gap-2 opacity-75  ">
+      <div className="hidden lg:flex justify-end gap-2 opacity-75 w-[25%] ">
         <img className="w-4" src={assets.plays_icon} alt="Play Icon" />
         <img className="w-4" src={assets.mic_icon} alt="Mic Icon" />
         <img className="w-4" src={assets.queue_icon} alt="Queue Icon" />
@@ -313,7 +325,7 @@ const AudioPlayer = ({ trackUri }) => {
             value={volume}
             max="100"
             onChange={handleVolumeChange}
-            className="w-24 h-1 cursor-pointer"
+            className="w-24 h-1 cursor-pointer volume-range"
           />
           <img
             className="w-4"

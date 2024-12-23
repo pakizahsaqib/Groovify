@@ -10,6 +10,7 @@ const Home = () => {
   console.log("Search Results : ", searchResults.length);
   const [popularArtists, setPopularArtists] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
+  const [filter, setFilter] = useState("All");
 
   console.log("HOME : ", userData.userId);
 
@@ -23,6 +24,7 @@ const Home = () => {
       console.error("No access token found!");
     }
   }, []);
+
   const fetchArtist = async (token) => {
     console.log("FetchArtist", token);
 
@@ -73,7 +75,6 @@ const Home = () => {
           },
         }
       );
-      //      console.log("Fetch Response", response.data);
 
       setNewReleases(response.data.albums || []);
     } catch (error) {
@@ -84,18 +85,39 @@ const Home = () => {
   return (
     <>
       <div className="flex items-center gap-2 mt-4">
-        <p className="bg-white text-black px-4 py-1 rounded-2xl cursor-pointer">
+        <p
+          className={`px-4 py-1 rounded-2xl cursor-pointer ${
+            filter === "All"
+              ? "bg-white text-black"
+              : "bg-neutral-700 hover:bg-white hover:text-black"
+          }`}
+          onClick={() => setFilter("All")}
+        >
           All
         </p>
-        <p className="bg-neutral-700 hover:bg-white hover:text-black px-4 py-1 rounded-2xl cursor-pointer">
-          Music
+        <p
+          className={`px-4 py-1 rounded-2xl cursor-pointer ${
+            filter === "Albums"
+              ? "bg-white text-black"
+              : "bg-neutral-700 hover:bg-white hover:text-black"
+          }`}
+          onClick={() => setFilter("Albums")}
+        >
+          Albums
         </p>
-        <p className="bg-neutral-700 hover:bg-white hover:text-black px-4 py-1 rounded-2xl cursor-pointer">
-          Podcast
+        <p
+          className={`px-4 py-1 rounded-2xl cursor-pointer ${
+            filter === "Artists"
+              ? "bg-white text-black"
+              : "bg-neutral-700 hover:bg-white hover:text-black"
+          }`}
+          onClick={() => setFilter("Artists")}
+        >
+          Artists
         </p>
       </div>
       <div className="my-4 overflow-auto">
-        <>
+        {filter === "All" || filter === "Artists" ? (
           <div className="mb-4">
             <h1 className="m-1 font-bold text-2xl p-4">Popular Artists</h1>
             <div className="flex overflow-auto p-4">
@@ -111,7 +133,9 @@ const Home = () => {
               ))}
             </div>
           </div>
+        ) : null}
 
+        {filter === "All" || filter === "Albums" ? (
           <div className="mb-4">
             <h1 className="m-1 font-bold text-2xl p-4">Featured Albums</h1>
             <div className="flex overflow-auto p-4">
@@ -129,55 +153,10 @@ const Home = () => {
               ))}
             </div>
           </div>
-        </>
+        ) : null}
       </div>
     </>
   );
 };
+
 export default Home;
-{
-  /*
-  // import React, { useEffect, useState } from "react";
-  // import { getArtists, getAlbums, getTracks } from "../services/api";
-  // import ArtistCard from "./ArtistCard";
-  // import AlbumCard from "./AlbumCard";
-  // const Home = () => {
-  //   const [artists, setArtists] = useState([]);
-  //   const [albums, setAlbums] = useState([]);
-  //   const [tracks, setTracks] = useState([]);
-  //   useEffect(() => {
-  //     getArtists().then((data) => setArtists(data));
-  //     getAlbums().then((data) => setAlbums(data));
-  //     getTracks().then((data) => setTracks(data));
-  //   }, []);
-  //   return (
-  //     <>
-  //       <div className="mb-4">
-  //         <h1 className="my-5 font-bold text-2xl">Popular Artists</h1>
-  //         <div className="flex overflow-auto">
-  //           {artists.map((artist) => (
-  //             <ArtistCard key={artist.id} artist={artist} />
-  //           ))}
-  //         </div>
-  //       </div>
-  //       <div className="mb-4">
-  //         <h1 className="my-5 font-bold text-2xl">Featured Albums</h1>
-  //         <div className="flex overflow-auto">
-  //           {albums.map((album) => (
-  //             <AlbumCard key={album.id} album={album} />
-  //           ))}
-  //         </div>
-  //       </div>
-  //       <div className="mb-4">
-  //         <h1 className="my-5 font-bold text-2xl">Today's Biggest Hits</h1>
-  //         <div className="flex overflow-auto">
-  //           {tracks.map((track) => (
-  //             <TrackCard key={track.id} track={track} />
-  //           ))}
-  //         </div>
-  //       </div>
-  //     </>
-  //   );
-  // };
-  // export default Home; */
-}

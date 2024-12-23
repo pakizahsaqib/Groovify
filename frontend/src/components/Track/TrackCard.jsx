@@ -3,19 +3,10 @@ import { assets } from "../../assets/frontend-assets/assets";
 import axios from "axios";
 import { useOutletContext } from "react-router-dom";
 
-const TrackCard = ({
-  name,
-  image,
-  desc,
-  id,
-  uri,
-  playlists,
-  token,
-  userId,
-}) => {
+const TrackCard = ({ name, image, desc, id, uri, playlists, token }) => {
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
   const [addedTracks, setAddedTracks] = useState([]);
-  const [showPlaylist, setShowPlaylist] = useState(false); // State to manage the visibility of the playlist dropdown
+  const [showPlaylist, setShowPlaylist] = useState(false);
   const { handleTrackSelect } = useOutletContext();
 
   useEffect(() => {
@@ -101,7 +92,6 @@ const TrackCard = ({
         {addedTracks.includes(id) ? "✓ Added" : "+ Add"}
       </button>
 
-      {/* Playlist Dropdown */}
       {showPlaylist && (
         <div className="mt-2 absolute top-16 left-2 bg-neutral-800 p-2 rounded shadow-md max-w-[160px] z-10">
           <select
@@ -120,7 +110,6 @@ const TrackCard = ({
         </div>
       )}
 
-      {/* Play Button */}
       <button
         onClick={() => handleTrackSelect(uri)}
         className="absolute top-4 left-4 w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"

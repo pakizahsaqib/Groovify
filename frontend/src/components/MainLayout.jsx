@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Children } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
@@ -64,7 +64,12 @@ function MainLayout({ userData }) {
     <div className="h-screen bg-black relative">
       <Navbar username={userData?.username} setSearchResults={handleSearch} />
       <div className="h-[80%] m-0 flex">
-        <Sidebar playlists={playlists} onPlaylistClick={handlePlaylistClick} />
+        <Sidebar
+          userId={userData?.userId}
+          playlists={playlists}
+          onPlaylistClick={handlePlaylistClick}
+          setPlaylists={setPlaylists}
+        />
         <div className="w-[100%] px-6 pt-4 flex-1 rounded-lg bg-[#121212] text-white overflow-auto lg:w-[75%] lg:ml-0">
           <Outlet
             context={{
