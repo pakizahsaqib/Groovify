@@ -1,5 +1,6 @@
 import React from "react";
 import { assets } from "../assets/frontend-assets/assets";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
@@ -110,12 +111,12 @@ const Login = () => {
 
           <p className="mt-8 text-center text-sm text-gray-400">
             Don't have an account?{" "}
-            <a
+            <Link
               to="/signup"
               className="text-white font-semibold hover:text-green-400 cursor-pointer"
             >
               Sign up for Groovify.
-            </a>
+            </Link>
           </p>
         </div>
       </div>

@@ -14,6 +14,7 @@ import PlaylistItem from "./components/Playlist/PlaylistItem";
 import SearchResults from "./components/SearchResult";
 import ExplorePremium from "./components/ExplorePremium";
 import InstallApp from "./components/InstallApp";
+import Signup from "./components/Signup";
 
 function App() {
   const [userData, setUserData] = useState(
@@ -65,6 +66,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
       {isAuthenticated ? (
         <>

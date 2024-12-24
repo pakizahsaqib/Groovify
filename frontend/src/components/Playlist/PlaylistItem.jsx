@@ -128,7 +128,7 @@ const PlaylistItem = () => {
                 id={index + 1}
                 uri={track.track.uri}
                 playlistId={selectedPlaylist.id}
-                onTrackRemoved={handleTrackRemoved} // Pass the callback to handle track removal
+                onTrackRemoved={handleTrackRemoved}
               />
             ))}
           </div>

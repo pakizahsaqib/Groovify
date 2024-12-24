@@ -1,5 +1,6 @@
 import React from "react";
 import { assets } from "../assets/frontend-assets/assets";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   return (
@@ -66,12 +67,13 @@ const Signup = () => {
         <hr className="my-6 flex-1 border border-gray-700" />
         <p className="my-6 text-center text-sm">
           Already have an account?
-          <a
-            href="/login"
+          <Link
+            to="/"
             className="text-white hover:text-green-500 hover:underline cursor-pointer"
           >
+            {" "}
             Log in here.
-          </a>
+          </Link>
         </p>
 
         <p className="mt-2 text-center text-xs text-gray-500">
